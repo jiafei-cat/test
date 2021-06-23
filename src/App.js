@@ -1,22 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import react from 'react'
+import store from './store'
 
+const { useReducer } = react
 function App() {
+  const [ignored, forceUpdate] = useReducer(x => x + 1, 0)
+  const { home } = store.getState()
+  store.subscribe(() => {
+    forceUpdate()
+  })
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>{home}</p>
+        <button onClick={() => store.dispatch({ type: 'add', payload: 1})}>+</button>
+        <button onClick={() => store.dispatch({ type: 'minus', payload: 1})}>-</button>
+        <button onClick={() => store.dispatch((dispatch, getState) => {
+          setTimeout(() => dispatch({ type: 'add', payload: 1}), 1000)
+        })}>sync +</button>
       </header>
     </div>
   );
