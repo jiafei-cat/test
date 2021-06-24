@@ -1,5 +1,5 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux'
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, combineReducers } from './redux'
+// import thunk from 'redux-thunk';
 
 function countReducer (state = 0, action) {
   switch (action.type) {
@@ -8,10 +8,11 @@ function countReducer (state = 0, action) {
     case 'minus':
       return state - action.payload
     default:
-      return state
+      return 0
   }
 }
 
-const store = createStore(combineReducers({home: countReducer}), applyMiddleware(thunk))
+const store = createStore(combineReducers({home: countReducer}))
+// const store = createStore(countReducer)
 
 export default store

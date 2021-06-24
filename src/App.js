@@ -1,13 +1,24 @@
 import react from 'react'
 import store from './store'
 
-const { useReducer } = react
+const { useReducer, useState, useEffect } = react
 function App() {
   const [ignored, forceUpdate] = useReducer(x => x + 1, 0)
-  const { home } = store.getState()
-  store.subscribe(() => {
-    forceUpdate()
-  })
+  const [, setState] = useState(0)
+  const home = store.getState()
+  console.log(home)
+  useEffect(() => {
+    const unsubscribe = store.subscribe(() => {
+      console.log('xxxxxxxx')
+      setState(state => state + 1)
+      // forceUpdate()
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
   return (
     <div className="App">
       <header className="App-header">
