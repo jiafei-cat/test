@@ -1,17 +1,14 @@
 import react from 'react'
 import store from './store'
-
+import Count from './count'
 const { useReducer, useState, useEffect } = react
 function App() {
-  const [ignored, forceUpdate] = useReducer(x => x + 1, 0)
-  const [, setState] = useState(0)
-  const home = store.getState()
-  console.log(home)
+  const [, forceUpdate] = useReducer(x => x + 1, 0)
+  const { home } = store.getState()
   useEffect(() => {
     const unsubscribe = store.subscribe(() => {
-      console.log('xxxxxxxx')
-      setState(state => state + 1)
-      // forceUpdate()
+      console.log('App=======')
+      forceUpdate()
     })
 
     return () => {
@@ -21,14 +18,11 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p>{home}</p>
-        <button onClick={() => store.dispatch({ type: 'add', payload: 1})}>+</button>
-        <button onClick={() => store.dispatch({ type: 'minus', payload: 1})}>-</button>
-        <button onClick={() => store.dispatch((dispatch, getState) => {
-          setTimeout(() => dispatch({ type: 'add', payload: 1}), 1000)
-        })}>sync +</button>
-      </header>
+      {
+        home < 6 && (
+          <Count />
+        )
+      }
     </div>
   );
 }

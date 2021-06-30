@@ -4,9 +4,9 @@ import { createStore, applyMiddleware, combineReducers } from './redux'
 function countReducer (state = 0, action) {
   switch (action.type) {
     case 'add':
-      return state + action.payload
+      return state.home + action.payload
     case 'minus':
-      return state - action.payload
+      return state.home - action.payload
     default:
       return 0
   }
@@ -14,5 +14,4 @@ function countReducer (state = 0, action) {
 
 const store = createStore(combineReducers({home: countReducer}))
 // const store = createStore(countReducer)
-
 export default store

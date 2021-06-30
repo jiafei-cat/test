@@ -1,56 +1,39 @@
-export function createStore (reducer) {
-  const currentListener = []
+export function createStore(reducer) {
   let state = null
-
+  const listenerList = []
   const getState = () => state
-
-  const subscribe = listener => {
-    currentListener.push(listener)
-
-    return () => {
-      currentListener.splice(currentListener.indexOf(listener), 1)
-    }
-  }
 
   const dispatch = (action) => {
     state = reducer(state, action)
-    currentListener.forEach(listener => {
+    console.log(state)
+    listenerList.forEach(listener => {
       listener()
     })
   }
 
+  const subscribe = listener => {
+    listenerList.push(listener)
+    return () => {
+      listenerList.splice(listenerList.indexOf(listener), 1)
+      console.log(listenerList)
+    }
+  }
 
-  dispatch({ type: 'REDUX_INITIAL' })
+  dispatch({ type: 'INITIAL_REDUCER'})
+  // dispatch({ type: 'add', payload: 1})
   return {
     getState,
-    subscribe,
     dispatch,
+    subscribe,
   }
 }
 
 
-export function combineReducers (reducerObj) {
-  return function combination (state = {}, action) {
-    Object.keys(reducerObj).forEach(key => {
-      state[key] = reducerObj[key](state[key], action)
-    })
-
-    return state
+export function combineReducers (objectReducer) {
+  return (state, action) => {
+    return Object.keys(objectReducer).reduce((obj, reducerKey) => {
+      obj[reducerKey] = objectReducer[reducerKey](state, action)
+      return obj
+    }, {})
   }
-}
-
-
-export function applyMiddleware (middleware) {
-
-}
-
-
-function compose(...fns) {
-  if (!fns.length) {
-    return
-  }
-  if (fns.length === 1) {
-    return fns
-  }
-  return (...arg) => fns.reduce((pre, fn) => fn(pre(...arg)))
 }
