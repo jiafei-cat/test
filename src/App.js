@@ -19,9 +19,9 @@ function App() {
   return (
     <div className="App">
       {
-        home < 6 && (
+        // home < 6 && (
           <Count />
-        )
+        // )
       }
     </div>
   );

@@ -1,5 +1,8 @@
-export function createStore(reducer) {
-  let state = null
+export function createStore(reducer, enhancer) {
+  if (Object.prototype.toString.call(enhancer) === '[object Function]') {
+    return enhancer(reducer)(createStore)
+  }
+  let state = {}
   const listenerList = []
   const getState = () => state
 
@@ -20,7 +23,6 @@ export function createStore(reducer) {
   }
 
   dispatch({ type: 'INITIAL_REDUCER'})
-  // dispatch({ type: 'add', payload: 1})
   return {
     getState,
     dispatch,
@@ -32,8 +34,42 @@ export function createStore(reducer) {
 export function combineReducers (objectReducer) {
   return (state, action) => {
     return Object.keys(objectReducer).reduce((obj, reducerKey) => {
-      obj[reducerKey] = objectReducer[reducerKey](state, action)
+      obj[reducerKey] = objectReducer[reducerKey](state[reducerKey], action)
       return obj
     }, {})
   }
+}
+
+export function applyMiddleware (...middleware) {
+  return reducer => createStore => {
+    const { getState, dispatch, ...fns } = createStore(reducer)
+    const middlewareApi = {
+      getState,
+      dispatch,
+    }
+
+    const chain = middleware.map(middlewareItem => 
+      middlewareItem(middlewareApi)
+    )
+
+    const enhancerDispatch = compose(...chain)(dispatch)
+
+    return {
+      ...fns,
+      getState,
+      dispatch: enhancerDispatch,
+    }
+  }
+}
+
+export function compose (...fn) {
+  if (!fn.length) {
+    return
+  }
+
+  if (fn.length === 1) {
+    return fn[0]
+  }
+
+  return (...arg) => fn.reduce((a, b) => a(b(...arg)))
 }
