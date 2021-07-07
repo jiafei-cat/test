@@ -8,7 +8,6 @@ export function createStore(reducer, enhancer) {
 
   const dispatch = (action) => {
     state = reducer(state, action)
-    console.log(state)
     listenerList.forEach(listener => {
       listener()
     })
@@ -18,7 +17,6 @@ export function createStore(reducer, enhancer) {
     listenerList.push(listener)
     return () => {
       listenerList.splice(listenerList.indexOf(listener), 1)
-      console.log(listenerList)
     }
   }
 

@@ -4,6 +4,7 @@ export default function thunk ({ getState, dispatch}) {
       return action(dispatch, getState)
     }
 
-    return next(action)
+    next(action)
+    return 'sdads'
   }
 }
